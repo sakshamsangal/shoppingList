@@ -137,3 +137,55 @@ body {
       flex-direction: column;
     }
   }
+
+.bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: space-around;
+  z-index: 1000;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 1rem 0.5rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #f1f1f1;
+  color: #333;
+  cursor: pointer;
+}
+
+
+.tab-button {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.tab-button.active {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.tab-content {
+  padding: 1rem;;
+  padding-bottom: 5rem; /* Space for fixed bottom tabs */
+}
+
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}

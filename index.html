@@ -8,20 +8,27 @@
   <link rel="stylesheet" href="shopping.css">
 </head>
 <body>
-  <header>Shopping List</header>
   <nav class="navbar" id="nav-categories"></nav>
-  <div class="container">
-    <div class="panel items-list">
+
+  <div class="tab-content">
+    <div id="tab-items" class="panel items-list tab-panel active">
       <h3>Items</h3>
       <div id="items-container"></div>
     </div>
-    <div class="panel buying-list">
+    <div id="tab-buying" class="panel buying-list tab-panel">
       <h3>Buying List</h3>
       <button onclick="clearBuyingList()">Clear Buying List</button>
 
       <div id="buying-container"></div>
     </div>
   </div>
+
+  <!-- Fixed Bottom Tab Bar -->
+  <div class="bottom-tabs">
+    <button class="tab-button active" onclick="showTab('items')">🛒 Items</button>
+    <button class="tab-button" onclick="showTab('buying')">✅ Buying List</button>
+  </div>
+
 
   <!-- Modal -->
   <div id="itemModal" class="modal">
@@ -40,6 +47,8 @@
   <script src="itemsData.js"></script>
 
   <script>
+
+
     function clearBuyingList() {
   buyingListData = [];
   localStorage.removeItem('buyingList');
@@ -188,6 +197,18 @@
     }
 
     renderItems();
+
+    function showTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.querySelector(`.tab-button[onclick="showTab('${tab}')"]`).classList.add('active');
+}
+
   </script>
+
+
+
 </body>
 </html>

@@ -1,0 +1,139 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-bottom: 60px;
+    background: #f0f0f0;
+  }
+  .navbar {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+  header {
+    background-color: #444;
+    color: white;
+    text-align: center;
+    padding: 5px 3px;
+    font-size: 1.5em;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  .navbar button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 2px;
+    cursor: pointer;
+  }
+  .navbar button:hover {
+    background-color: #777;
+  }
+  .container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .panel {
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  .items-list .category, .buying-list .category {
+    margin-bottom: 20px;
+  }
+  .category h4 {
+    margin-bottom: 10px;
+  }
+  .items-list .item {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .items-list .item:hover {
+    background: #e8f0fe;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .modal img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    display: block;
+    margin: 10px auto;
+  }
+  .label {
+    margin: 10px 0 2px;
+    font-weight: bold;
+  }
+  .tag-buttons button {
+    margin: 5px;
+    padding: 4px 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+  }
+  .buying-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  .buying-list li {
+    background: #e1ffda;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  .remove-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+  }

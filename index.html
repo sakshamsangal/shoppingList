@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple Shopping List</title>
+  <link rel="stylesheet" href="shopping.css">
+</head>
+<body>
+  <header>Shopping List</header>
+  <nav class="navbar" id="nav-categories"></nav>
+  <div class="container">
+    <div class="panel items-list">
+      <h3>Items</h3>
+      <div id="items-container"></div>
+    </div>
+    <div class="panel buying-list">
+      <h3>Buying List</h3>
+      <button onclick="clearBuyingList()">Clear Buying List</button>
+
+      <div id="buying-container"></div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="itemModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <img id="item-image" src="https://via.placeholder.com/120" alt="Item" />
+      <div class="label">Name:</div>
+      <div id="item-name">—</div>
+      <div class="label">Tag Value:</div>
+      <div id="tag-value"></div>
+      <div class="tag-buttons" id="qty-tags"></div>
+    </div>
+  </div>
+
+  <!-- Load itemsData from external JS -->
+  <script src="itemsData.js"></script>
+
+  <script>
+    function clearBuyingList() {
+  buyingListData = [];
+  localStorage.removeItem('buyingList');
+  renderBuyingList();
+}
+
+    const itemsContainer = document.getElementById('items-container');
+    const itemName = document.getElementById('item-name');
+    const itemImage = document.getElementById('item-image');
+    const tagValueLabel = document.getElementById('tag-value');
+    const qtyTags = document.getElementById('qty-tags');
+    const buyingContainer = document.getElementById('buying-container');
+    const modal = document.getElementById("itemModal");
+    const closeModal = document.getElementById("closeModal");
+    const navCategories = document.getElementById("nav-categories");
+
+    let selectedItem = null;
+    let buyingListData = [];
+
+    function scrollToCategory(category) {
+      const el = document.getElementById(`cat-${category}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderBuyingList() {
+      buyingContainer.innerHTML = '';
+      const grouped = {};
+      buyingListData.forEach(item => {
+        const category = Object.keys(itemsData).find(cat => itemsData[cat].some(i => i.name === item.name));
+        if (!grouped[category]) grouped[category] = [];
+        grouped[category].push(item);
+      });
+
+      for (const category in grouped) {
+        const section = document.createElement('div');
+        section.className = 'category';
+        section.innerHTML = `<h4>${category}</h4>`;
+
+        const ul = document.createElement('ul');
+        grouped[category].forEach((entry) => {
+          const li = document.createElement('li');
+          li.textContent = `${entry.name} - ${entry.tag}`;
+          li.addEventListener('click', () => {
+            selectedItem = entry;
+            itemName.textContent = entry.name;
+            itemImage.src = entry.image;
+            itemImage.alt = entry.name;
+            tagValueLabel.textContent = entry.tag || '';
+            modal.style.display = "block";
+          });
+
+          const removeBtn = document.createElement('button');
+          removeBtn.textContent = 'Remove';
+          removeBtn.className = 'remove-btn';
+          removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            buyingListData.splice(buyingListData.indexOf(entry), 1);
+            localStorage.setItem('buyingList', JSON.stringify(buyingListData));
+            renderBuyingList();
+          });
+
+          li.appendChild(removeBtn);
+          ul.appendChild(li);
+        });
+        section.appendChild(ul);
+        buyingContainer.appendChild(section);
+      }
+    }
+
+    function addItemToBuyingList(item, tag) {
+      const existing = buyingListData.find(i => i.name === item.name);
+      if (existing) {
+        existing.tag = tag;
+      } else {
+        buyingListData.push({ ...item, tag });
+      }
+      localStorage.setItem('buyingList', JSON.stringify(buyingListData));
+      renderBuyingList();
+    }
+
+    function renderItems() {
+      itemsContainer.innerHTML = '';
+      navCategories.innerHTML = '';
+
+      // Add Buying List button to nav
+      const buyingListBtn = document.createElement('button');
+      buyingListBtn.textContent = "Buying List";
+      buyingListBtn.onclick = () => {
+        const el = document.querySelector(".buying-list");
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      };
+      navCategories.appendChild(buyingListBtn);
+
+      for (const category in itemsData) {
+        const navBtn = document.createElement('button');
+        navBtn.textContent = category;
+        navBtn.onclick = () => scrollToCategory(category);
+        navCategories.appendChild(navBtn);
+
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'category';
+        categoryDiv.id = `cat-${category}`;
+        categoryDiv.innerHTML = `<h4>${category}</h4>`;
+
+        itemsData[category].forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.textContent = item.name;
+          div.addEventListener('click', () => {
+            selectedItem = item;
+            itemName.textContent = item.name;
+            itemImage.src = item.image;
+            itemImage.alt = item.name;
+            tagValueLabel.textContent = '';
+            modal.style.display = "block";
+          });
+          categoryDiv.appendChild(div);
+        });
+        itemsContainer.appendChild(categoryDiv);
+      }
+
+      qtyTags.innerHTML = '';
+      const tags = ["50g", "100g", "200g", "500g", "1 Kg", "1.5 Kg", "2 Kg", "2.5 Kg", "10 Kg", "1 dozen", "2 dozen"];
+      tags.forEach(label => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = label;
+        btn.addEventListener('click', () => {
+          if (!selectedItem) return;
+          tagValueLabel.textContent = label;
+          addItemToBuyingList(selectedItem, label);
+          modal.style.display = "none";
+        });
+        qtyTags.appendChild(btn);
+      });
+    }
+
+    closeModal.onclick = () => modal.style.display = "none";
+    window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+    // Load localStorage on load
+    const stored = localStorage.getItem('buyingList');
+    if (stored) {
+      buyingListData = JSON.parse(stored);
+      renderBuyingList();
+    }
+
+    renderItems();
+  </script>
+</body>
+</html>
